@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  refresh: 'http://localhost:4200/salon',
+  apiUrl: 'https://localhost:44378/api',
+  allowDomain: 'https://localhost:44378',
+  disallow: 'https://localhost:44378/api/login'
 };
 
 /*

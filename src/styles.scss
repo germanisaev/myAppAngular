@@ -1,1 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~font-awesome/scss/font-awesome.scss';
+
+@import '~ngx-bootstrap/datepicker/bs-datepicker.scss';
+/* @import  url(https://fonts.googleapis.com/css?family=Open+Sans:400,700); */
+
+body {
+    font-size: 16px;
+    font-family: sans-serif;
+}
+
+header {
+    box-shadow: 0 4px 2px -2px #ddd;
+}
+
+.close {
+    border: none;
+    background-color: transparent;
+}
+
+a { cursor: pointer; }
+
+.app-container {
+    min-height: 320px;
+    overflow: hidden;
+}
+
+.btn-delete-user {
+    width: 40px;
+    text-align: center;
+    box-sizing: content-box;
+}
+
+form .form-group {
+    margin-bottom: 1em;
+}

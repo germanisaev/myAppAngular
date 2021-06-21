@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pet-grooming"
+    }
+  },
+  "defaultProject": "pet-grooming",
+  "cli": {
+    "analytics": "0fcdbfe8-c0d7-4b08-b340-1e0c64657f38"
+  }
 }

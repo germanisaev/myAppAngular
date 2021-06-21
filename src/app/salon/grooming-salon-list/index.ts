@@ -1,0 +1,1 @@
+export * from './grooming-salon-list.component';
