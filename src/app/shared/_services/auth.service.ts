@@ -57,13 +57,6 @@ export class AuthService {
         return this.http.post(`${environment.apiUrl}/users/register`, user);
     }
 
-
-
-    /* login(email:string, password:string ) {
-        return this.http.post<User>('/api/login', {email, password})
-            .do(res => this.setSession) 
-            .shareReplay();
-    } */
           
     private setSession(authResult) {
         const expiresAt = moment().add(authResult.expiresIn,'second');
@@ -72,10 +65,6 @@ export class AuthService {
         localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
     }          
 
-    /* logout() {
-        localStorage.removeItem("id_token");
-        localStorage.removeItem("expires_at");
-    } */
 
     public isLoggedIn() {
         return moment().isBefore(this.getExpiration());
