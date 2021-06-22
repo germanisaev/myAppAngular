@@ -22,8 +22,4 @@ export class HeaderComponent {
     this.authService.logout();
   }
 
-  ngOnChanges() {
-    
-  }
-
 }
