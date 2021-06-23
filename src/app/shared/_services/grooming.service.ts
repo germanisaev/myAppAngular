@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { GroomingCreated } from '../_models';
 import { Grooming } from '../_models/grooming.model';
@@ -25,9 +26,17 @@ export class GroomingService {
     return headers;
   } */
 
+  
+
   _baseUrl = environment.apiUrl + '/grooming';
 
   constructor(private http: HttpClient) { }
+
+  private _refreshNeeded$ = new Subject<void>();
+
+  get refreshNeeded$() {
+    return this._refreshNeeded$;
+  }
 
   private getCollectionUrl() {
     return this._baseUrl;
@@ -50,11 +59,19 @@ export class GroomingService {
   }
 
   createItem(model: GroomingCreated): Observable<Grooming> {
-    return this.http.post<Grooming>(this.getCollectionUrl(), JSON.stringify(model), this.httpOptions);
+    return this.http.post<Grooming>(this.getCollectionUrl(), JSON.stringify(model), this.httpOptions)
+    .pipe(
+      tap(() => {
+        this.refreshNeeded$.next();
+      }));
   }
 
   updateItem(model: Grooming, id: number) {
-    return this.http.put(this.getElementUrl(id), JSON.stringify(model), this.httpOptions);
+    return this.http.put(this.getElementUrl(id), JSON.stringify(model), this.httpOptions)
+    .pipe(
+      tap(() => {
+        this.refreshNeeded$.next();
+      }));
   }
 
   getExist(model: GroomingCreated) {

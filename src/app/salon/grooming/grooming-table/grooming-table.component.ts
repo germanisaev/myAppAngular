@@ -127,16 +127,20 @@ export class GroomingTableComponent implements OnInit {
     modalRef.result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       if (result === 'created') {
+        this.service.refreshNeeded$.subscribe(() => {
+          this.refreshData();
+        });
         this.refreshData();
       }
       if (result === 'updated') {
+        this.service.refreshNeeded$.subscribe(() => {
+          this.refreshData();
+        });
         this.refreshData();
-        this.refresh();
       }
       if (result === 'yes') {
         this.onDelete(inspect);
         this.service.deleteItem(inspect.Id).subscribe(response => {
-          console.log(response);
           this.refreshData();
         });
       }
