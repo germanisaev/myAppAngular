@@ -18,6 +18,10 @@ export class GroomingHomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.doLoad();
+  }
+
+  doLoad() {
     this.inspections$ = this.service.getAll();
     this.duplicate$ = this.inspections$;
   }
@@ -27,7 +31,7 @@ export class GroomingHomeComponent implements OnInit {
   }
 
   doCancel(value) {
-    this.duplicate$ = value;
+    this.doLoad();
   }
 
 }

@@ -58,8 +58,7 @@ export class GroomingTableComponent implements OnInit {
     console.log('clear');
     this.fromDate = null;
     this.toDate = null;
-    this.duplicate$ = this.inspections;
-    this.filterCancel.emit(this.duplicate$);
+    this.filterCancel.emit(this.inspections);
   }
 
   reverseTimeStamp(datetimeString) {
@@ -129,7 +128,6 @@ export class GroomingTableComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
       if (result === 'created') {
         this.refreshData();
-        //this.refresh();
       }
       if (result === 'updated') {
         this.refreshData();
@@ -140,7 +138,6 @@ export class GroomingTableComponent implements OnInit {
         this.service.deleteItem(inspect.Id).subscribe(response => {
           console.log(response);
           this.refreshData();
-          //this.refresh();
         });
       }
 

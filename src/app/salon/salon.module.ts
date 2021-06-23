@@ -13,7 +13,6 @@ import { ModalEditComponent } from './modal-edit/modal-edit.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
-import { GroomingFormComponent } from './grooming/grooming-form/grooming-form.component';
 import { GroomingHomeComponent } from './grooming/grooming-home/grooming-home.component';
 import { GroomingTableComponent } from './grooming/grooming-table/grooming-table.component';
 import { ModalConfirmComponent } from './modal-confirm/modal-confirm.component';
@@ -35,7 +34,6 @@ import { ModalViewComponent } from './modal-view/modal-view.component';
         ModalEditComponent,
         HeaderComponent,
         FilterPipe,
-        GroomingFormComponent,
         GroomingHomeComponent,
         GroomingTableComponent,
         ModalConfirmComponent,
