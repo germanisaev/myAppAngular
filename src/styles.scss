@@ -21,6 +21,9 @@ header {
 
 a { cursor: pointer; }
 
+.bs-datepicker-container {
+    padding: 0;
+}
 .app-container {
     min-height: 320px;
     overflow: hidden;

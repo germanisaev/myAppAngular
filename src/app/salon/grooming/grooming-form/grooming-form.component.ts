@@ -1,99 +1,87 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Grooming, User, Veterinar } from '@app/shared/_models';
+import { PetTypes } from '@app/shared/_models/pet-type.enum';
+import { Services } from '@app/shared/_models/services.enum';
+import { CustomerService, GroomingService, VeterinarService } from '@app/shared/_services';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
-import { Grooming, User, Veterinar } from 'src/app/shared/_models';
-import { CustomerService, GroomingService, VeterinarService } from 'src/app/shared/_services';
-import { Services } from 'src/app/shared/_models/services.enum';
-import { PetTypes } from 'src/app/shared/_models/pet-type.enum';
 import { Observable } from 'rxjs';
-
+import { filter, map, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-modal-content',
-  templateUrl: './modal-content.component.html'
+  selector: 'grooming-form',
+  templateUrl: './grooming-form.component.html'
 })
-export class ModalContentComponent implements OnInit {
+export class GroomingFormComponent implements OnInit {
 
   @Input() fromParent: any;
-  closeResult: string = '';
+
+  @Input()
+  buttonText = 'Submit Grooming';
+
+  @Output()
+  submitGrooming = new EventEmitter<Grooming>();
+
   form: FormGroup;
   loading = false;
   submitted = false;
   customer: User;
 
-  veterinar$: Observable<Veterinar>;
-
-  veterinars: Array<Veterinar> = [];
-  owners: Array<User> = [];
-
   enumServices: { id: number; name: string }[] = [];
   enumTypes: { id: number; name: string }[] = [];
 
+  veterinars$: Observable<Array<Veterinar>>;
+  owners$: Observable<Array<User>>;
+
   constructor(
+    private fb: FormBuilder,
     public activeModal: NgbActiveModal,
     private veterinarService: VeterinarService,
     private customerService: CustomerService,
     private groomingService: GroomingService,
-  ) {
-  }
-
-  get f() { return this.form.controls; }
-  get Id() { return this.form.get('Id'); }
-  get Veterinar() { return this.form.get('Veterinar'); }
-  get PetType() { return this.form.get('PetType'); }
-  get PetName() { return this.form.get('PetName'); }
-  get OwnerId() { return this.form.get('OwnerId'); }
-  get OwnerName() { return this.form.get('OwnerName'); }
-  get Appointmnet() { return this.form.get('Appointmnet'); }
-  get Services() { return this.form.get('Services'); }
-  get appointmnetDate() { return this.form.get('AppointmnetGroup.appointmnetDate'); }
-  get appointmnetTime() { return this.form.get('AppointmnetGroup.appointmnetTime'); }
-
-  createForm() {
-    this.form = new FormGroup({
-      Id: new FormControl(''),
-      AppointmnetGroup: new FormGroup({
-        appointmnetDate: new FormControl(moment().format('YYYY-MM-DD').toString()),
-        appointmnetTime: new FormControl(moment().format('HH:mm').toString())
-      }),
-      PetName: new FormControl(''),
-      PetType: new FormControl(''),
-      OwnerId: new FormControl(''),
-      OwnerName: new FormControl(''),
-      Services: new FormControl(''),
-      Veterinar: new FormControl(''),
-    });
-  }
-
-  getVeterinars() {
-    this.veterinarService.getAll().subscribe(response =>
-      this.veterinars = response
-    );
-  }
-
-  getVeterinarBy(id: any): string {
-    const data = this.veterinars.filter(x => { return x.id == id })[0];
-    return data.firstName + ' ' + data.lastName;
-  }
-
-  getCustomerName() {
-    this.customerService.getById(this.fromParent.ownerId).subscribe(response => {
-      this.customer = response;
-      const fullName = this.customer.firstName + ' ' + this.customer.lastName;
-      this.OwnerId.setValue(fullName, {
-        onlySelf: true
-      });
-    });
-  }
+    ) { }
 
   ngOnInit() {
-
     this.createForm();
     this.getVeterinars();
     this.enumInit();
+    this.onIntiGrooming();
+  }
 
+  createForm() {
+    this.form = this.fb.group({
+      Id: [''],
+      AppointmnetGroup: this.fb.group({
+        appointmnetDate: [moment().format('DD-MM-YYYY').toString(), Validators.required],
+        appointmnetTime: [moment().format('HH:mm').toString(), Validators.required]
+      }),
+      PetName: ['', Validators.required],
+      PetType: ['', Validators.required],
+      OwnerId: [''],
+      OwnerName: [''],
+      Services: ['', Validators.required],
+      Veterinar: ['', Validators.required]
+    });
+  }
+
+  enumInit() {
+    const dataServices = new Services();
+    this.enumServices = dataServices.get();
+    const dataPetTypes = new PetTypes();
+    this.enumTypes = dataPetTypes.get();
+  }
+
+  getVeterinars() {
+    this.veterinars$ = this.veterinarService.getAll();
+  }
+
+  onIntiGrooming() {
     const grooming: Grooming = this.fromParent;
+
+    this.submitGrooming.emit({
+      ...this.form.value,
+    });
 
     let datetime = grooming.Appointment;
     let date = datetime.split(' ')[0];
@@ -107,6 +95,7 @@ export class ModalContentComponent implements OnInit {
     createDate.setDate(d);
     createDate.setMonth(m - 1);
     createDate.setFullYear(y);
+
 
     this.form.patchValue({
       Id: grooming.Id,
@@ -123,13 +112,6 @@ export class ModalContentComponent implements OnInit {
     });
   }
 
-  enumInit() {
-    const dataServices = new Services();
-    this.enumServices = dataServices.get();
-    const dataPetTypes = new PetTypes();
-    this.enumTypes = dataPetTypes.get();
-  }
-
   closeModal(sendData) {
     this.activeModal.close(sendData);
   }
@@ -144,7 +126,25 @@ export class ModalContentComponent implements OnInit {
     return dataPetTypes.getBy(id);
   }
 
-  onSubmit() {
+  getVeterinarBy(id: any) {
+    const data = this.veterinars$.pipe(
+      switchMap((value, index)=> value.filter(x => { return x.id == id}) ));
+    return data;
+  }
+
+  get f() { return this.form.controls; }
+  get Id() { return this.form.get('Id'); }
+  get Veterinar() { return this.form.get('Veterinar'); }
+  get PetType() { return this.form.get('PetType'); }
+  get PetName() { return this.form.get('PetName'); }
+  get OwnerId() { return this.form.get('OwnerId'); }
+  get OwnerName() { return this.form.get('OwnerName'); }
+  get Appointmnet() { return this.form.get('Appointmnet'); }
+  get Services() { return this.form.get('Services'); }
+  get appointmnetDate() { return this.form.get('AppointmnetGroup.appointmnetDate'); }
+  get appointmnetTime() { return this.form.get('AppointmnetGroup.appointmnetTime'); }
+
+  doSubmit() {
     this.submitted = true;
 
     if (this.form.invalid) {
@@ -164,6 +164,8 @@ export class ModalContentComponent implements OnInit {
     mydate.setSeconds(0);
     let exp = moment(mydate).format('DD-MM-YYYY HH:mm');
 
+    const veterinar$ = this.getVeterinarBy(this.Veterinar.value);
+
     let grooming = new Grooming();
     grooming.Id = id;
     grooming.Appointment = exp;
@@ -175,10 +177,12 @@ export class ModalContentComponent implements OnInit {
     grooming.ServiceId = this.Services.value;
     grooming.ServiceName = this.getServiceBy(this.Services.value);
     grooming.VeterinarId = this.Veterinar.value;
-    grooming.VeterinarName = this.getVeterinarBy(this.Veterinar.value);
+    grooming.VeterinarName = '?';
 
     this.groomingService.updateItem(grooming, id).subscribe(response => console.log('Success Create: ' + response));
     this.closeModal('updated');
+
+
   }
 
 }

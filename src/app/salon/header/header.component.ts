@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/shared/_services/auth.service';
 
 
 @Component({
-  selector: 'app-header',
+  selector: 'tool-header',
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {

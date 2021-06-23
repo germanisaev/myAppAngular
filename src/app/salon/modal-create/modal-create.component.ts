@@ -4,16 +4,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { GroomingCreated, User, Veterinar } from 'src/app/shared/_models';
 import { CustomerService, GroomingService, VeterinarService } from 'src/app/shared/_services';
-import { Services } from 'src/app/shared/_models/services.enum';
-import { PetTypes } from 'src/app/shared/_models/pet-type.enum';
+import { Services } from '@app/shared/_models/services.enum';
+import { PetTypes } from '@app/shared/_models/pet-type.enum';
 
 
 @Component({
-  selector: 'app-new-order',
-  templateUrl: './modal-appointmnet.component.html',
+  selector: 'modal-create',
+  templateUrl: './modal-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ModalAppointmnetComponent implements OnInit, AfterViewInit {
+export class ModalCreateComponent implements OnInit, AfterViewInit {
 
   @Input() fromParent: any;
   @Input() formType: string;

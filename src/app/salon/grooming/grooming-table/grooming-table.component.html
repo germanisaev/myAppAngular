@@ -1,7 +1,7 @@
 <h1 class="p-2">Grooming Salon Inspection</h1>
 <div class="row">
     <div class="col-2">
-        <a (click)="openAppointmnet()" class="btn btn-sm btn-success mx-2 mb-2">Add New <i class="fa fa-plus"
+        <a (click)="openModal('create')" class="btn btn-sm btn-success mx-2 mb-2">Add New <i class="fa fa-plus"
                 aria-hidden="true"></i></a>
         <a (click)="onClear()" class="btn btn-sm btn-secondary mx-2 mb-2">Clear</a>
     </div>
@@ -20,14 +20,14 @@
     </div>
     <div class="col-3">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Enter date to for filter" [minDate]="minDate" [maxDate]="maxDate"
-                #dp1="bsDatepicker" bsDatepicker [(ngModel)]="toDate">
+            <input type="text" class="form-control" placeholder="Enter date to for filter" [minDate]="minDate"
+                [maxDate]="maxDate" #dp1="bsDatepicker" bsDatepicker [(ngModel)]="toDate">
             <button class="btn btn-secondary" (click)="filterDate()"><i class="fa fa-filter"></i></button>
         </div>
     </div>
 </div>
 
-<table class="table table-striped" *ngIf="duplicate$ | async as inspections">
+<table class="table table-striped" *ngIf="inspections | async as inspections">
     <thead>
         <tr>
             <th></th>
@@ -42,8 +42,11 @@
     </thead>
     <tbody>
         <tr *ngFor="let inspect of inspections | filter: 'OwnerName': searchText">
-            <td><a *ngIf="currentUser==inspect.OwnerId" (click)="openModal(0,inspect)"><i class="fa fa-eye"
-                        aria-hidden="true"></i></a></td>
+            <td>
+                <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal('view',inspect)">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
+            </td>
             <td>{{inspect.Appointment}}</td>
             <td>{{inspect.PetName}}</td>
             <td>{{inspect.PetTypeName}}</td>
@@ -51,11 +54,14 @@
             <td>{{inspect.ServiceName}}</td>
             <td>{{inspect.VeterinarName}}</td>
             <td style="white-space: nowrap">
-                <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal(1,inspect)"
-                    class="btn btn-sm btn-primary mr-1"><i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;
+                <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal('edit',inspect)"
+                    class="btn btn-sm btn-primary mr-1">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </a>&nbsp;
                 <a *ngIf="currentUser==inspect.OwnerId" class="btn btn-sm btn-danger"
-                    (click)="openModalConfirm(DeleteModal, inspect.Id)"><i class="fa fa-trash-o"
-                        aria-hidden="true"></i></a>
+                    (click)="openModal('confirm', inspect)">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </a>
             </td>
         </tr>
         <tr *ngIf="!inspections">
@@ -65,21 +71,3 @@
         </tr>
     </tbody>
 </table>
-
-
-
-<ng-template #DeleteModal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Confirmation</h4>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-            <span aria-hidden="true">×</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <p>Are you sure to delete this?</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="d('Cross click')">Cancel</button>
-        <button type="button" class="btn btn-outline-dark" (click)="c('yes')">Yes</button>
-    </div>
-</ng-template>

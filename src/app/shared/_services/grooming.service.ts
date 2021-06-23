@@ -25,26 +25,36 @@ export class GroomingService {
     return headers;
   } */
 
+  _baseUrl = environment.apiUrl + '/grooming';
+
   constructor(private http: HttpClient) { }
 
+  private getCollectionUrl() {
+    return this._baseUrl;
+  }
+
+  private getElementUrl(elementId: any) {
+    return this._baseUrl + '/' + encodeURIComponent(String(elementId));
+  }
+
   getAll(): Observable<Grooming[]> {
-    return this.http.get<Grooming[]>(`${environment.apiUrl}/grooming`, this.httpOptions);
+    return this.http.get<Grooming[]>(this.getCollectionUrl(), this.httpOptions);
   }
 
   getById(id: any): Observable<Grooming> {
-    return this.http.get<Grooming>(`${environment.apiUrl}/grooming/${id}`, this.httpOptions);
+    return this.http.get<Grooming>(this.getElementUrl(id), this.httpOptions);
   }
 
   deleteItem(id: any) {
-    return this.http.delete(`${environment.apiUrl}/grooming/${id}`, this.httpOptions);
+    return this.http.delete(this.getElementUrl(id), this.httpOptions);
   }
 
   createItem(model: GroomingCreated): Observable<Grooming> {
-    return this.http.post<Grooming>(`${environment.apiUrl}/grooming`, JSON.stringify(model), this.httpOptions);
+    return this.http.post<Grooming>(this.getCollectionUrl(), JSON.stringify(model), this.httpOptions);
   }
 
   updateItem(model: Grooming, id: number) {
-    return this.http.put(`${environment.apiUrl}/grooming/${id}`, JSON.stringify(model), this.httpOptions);
+    return this.http.put(this.getElementUrl(id), JSON.stringify(model), this.httpOptions);
   }
 
   getExist(model: GroomingCreated) {
