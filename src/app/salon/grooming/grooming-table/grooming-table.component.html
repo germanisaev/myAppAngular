@@ -1,9 +1,11 @@
 <h1 class="p-2">Grooming Salon Inspection</h1>
 <div class="row">
     <div class="col-2">
-        <a (click)="openModal('create')" class="btn btn-sm btn-success mx-2 mb-2">Add New <i class="fa fa-plus"
+        <a (click)="openModal('create')" class="btn btn-sm btn-success mx-2 mb-2" tooltip="create inspection"
+        placement="top">Add New <i class="fa fa-plus"
                 aria-hidden="true"></i></a>
-        <a (click)="onClear()" class="btn btn-sm btn-secondary mx-2 mb-2">Clear</a>
+        <a (click)="onClear()" class="btn btn-sm btn-secondary mx-2 mb-2" tooltip="clear filter"
+        placement="top">Clear</a>
     </div>
     <div class="col-4">
         <div class="input-group">
@@ -22,7 +24,8 @@
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Enter date to for filter" [minDate]="minDate"
                 [maxDate]="maxDate" #dp1="bsDatepicker" bsDatepicker [(ngModel)]="toDate">
-            <button class="btn btn-secondary" (click)="filterDate()"><i class="fa fa-filter"></i></button>
+            <button class="btn btn-secondary" (click)="filterDate()" tooltip="filter by dates"
+            placement="top"><i class="fa fa-filter"></i></button>
         </div>
     </div>
 </div>
@@ -43,7 +46,8 @@
     <tbody>
         <tr *ngFor="let inspect of inspections | filter: 'OwnerName': searchText">
             <td>
-                <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal('view',inspect)">
+                <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal('view',inspect)" tooltip="view row"
+                placement="top">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                 </a>
             </td>
@@ -55,11 +59,13 @@
             <td>{{inspect.VeterinarName}}</td>
             <td style="white-space: nowrap">
                 <a *ngIf="currentUser==inspect.OwnerId" (click)="openModal('edit',inspect)"
-                    class="btn btn-sm btn-primary mr-1">
+                    class="btn btn-sm btn-primary mr-1" tooltip="edit row"
+                    placement="top">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                 </a>&nbsp;
                 <a *ngIf="currentUser==inspect.OwnerId" class="btn btn-sm btn-danger"
-                    (click)="openModal('confirm', inspect)">
+                    (click)="openModal('confirm', inspect)" tooltip="delete row"
+                    placement="top">
                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                 </a>
             </td>

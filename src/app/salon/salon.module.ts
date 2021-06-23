@@ -12,6 +12,7 @@ import { ModalEditComponent } from './modal-edit/modal-edit.component';
 
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { GroomingHomeComponent } from './grooming/grooming-home/grooming-home.component';
 import { GroomingTableComponent } from './grooming/grooming-table/grooming-table.component';
@@ -27,6 +28,7 @@ import { ModalViewComponent } from './modal-view/modal-view.component';
         SalonRoutingModule,
         BsDatepickerModule.forRoot(),
         TimepickerModule.forRoot(),
+        TooltipModule.forRoot()
     ],
     declarations: [
         DashboardComponent,
