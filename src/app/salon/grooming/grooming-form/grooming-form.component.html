@@ -1,0 +1,155 @@
+<form [formGroup]="form" (ngSubmit)="doSubmitInspection()">
+    <input [hidden]="true" formControlName="Id">
+        <div class="form-group">
+            <label for="appointmnet">Appointmnet Date</label>
+            <div class="row" formGroupName="AppointmnetGroup">
+                <div class="col-6">
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                        formControlName="appointmnetDate" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && appointmnetDate.errors }" />
+                </div>
+                <div class="col-6">
+                    <input type="text" onfocusin="(this.type='time')" onfocusout="(this.type='text')"
+                        formControlName="appointmnetTime" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && appointmnetTime.errors }" />
+                </div>
+            </div>
+            <div *ngIf="submitted && Appointmnet.errors" class="invalid-feedback">
+                <div *ngIf="Appointmnet.errors.required">Appointmnet Date is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="petName">Pet Name</label>
+            <input type="text" id="petName" formControlName="PetName" [autocomplete]="false" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && PetName.errors }" />
+            <div *ngIf="submitted && PetName.errors" class="invalid-feedback">
+                <div *ngIf="PetName.errors.required">Pet Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="petType">Pet Type</label>
+            <select formControlName="PetType" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && PetType.errors }">
+                <option value="" disabled>Choose Pet Type</option>
+                <option *ngFor="let tp of enumTypes" [value]="tp.id">{{tp.name}}</option>
+            </select>
+            <div *ngIf="submitted && PetType.errors" class="invalid-feedback">
+                <div *ngIf="PetType.errors.required">Pet Type is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input [hidden]="true" type="text" formControlName="OwnerId" />
+        </div>
+        <div class="form-group">
+            <label for="ownerName">Owner's Name</label>
+            <input [attr.disabled]="true" type="text" id="ownerName" formControlName="OwnerName" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && OwnerName.errors }" />
+            <div *ngIf="submitted && OwnerName.errors" class="invalid-feedback">
+                <div *ngIf="OwnerName.errors.required">Owner's Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="services">Services</label>
+            <select formControlName="Services" id="services" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && Services.errors }">
+                <option value="" disabled>Choose Service</option>
+                <option *ngFor="let s of enumServices" [value]="s.id">{{s.name}}</option>
+            </select>
+            <div *ngIf="submitted && Services.errors" class="invalid-feedback">
+                <div *ngIf="Services.errors.required">Services is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="veterinarId">Veterinarian Name</label>
+            <select formControlName="Veterinar" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && Veterinar.errors }">
+                <option value="" disabled>Choose Veterinarian Name</option>
+                <option *ngFor="let vet of veterinars" [value]="vet.id">{{vet.firstName}} {{vet.lastName}}</option>
+            </select>
+            <div *ngIf="submitted && Veterinar.errors" class="invalid-feedback">
+                <div *ngIf="Veterinar.errors.required">Veterinar Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button [disabled]="loading" class="btn btn-primary" type="submit">{{buttonText}}</button>
+        </div>
+</form>
+
+<!-- 
+    <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+        <input [hidden]="true" formControlName="Id">
+        <div class="form-group">
+            <label for="appointmnet">Appointmnet Date</label>
+            <div class="row" formGroupName="AppointmnetGroup">
+                <div class="col-6">
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                        formControlName="appointmnetDate" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && appointmnetDate.errors }" />
+                </div>
+                <div class="col-6">
+                    <input type="text" onfocusin="(this.type='time')" onfocusout="(this.type='text')"
+                        formControlName="appointmnetTime" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && appointmnetTime.errors }" />
+                </div>
+            </div>
+            <div *ngIf="submitted && Appointmnet.errors" class="invalid-feedback">
+                <div *ngIf="Appointmnet.errors.required">Appointmnet Date is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="petName">Pet Name</label>
+            <input type="text" id="petName" formControlName="PetName" [autocomplete]="false" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && PetName.errors }" />
+            <div *ngIf="submitted && PetName.errors" class="invalid-feedback">
+                <div *ngIf="PetName.errors.required">Pet Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="petType">Pet Type</label>
+            <select formControlName="PetType" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && PetType.errors }">
+                <option value="" disabled>Choose Pet Type</option>
+                <option *ngFor="let tp of enumTypes" [value]="tp.id">{{tp.name}}</option>
+            </select>
+            <div *ngIf="submitted && PetType.errors" class="invalid-feedback">
+                <div *ngIf="PetType.errors.required">Pet Type is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input [hidden]="true" type="text" formControlName="OwnerId" />
+        </div>
+        <div class="form-group">
+            <label for="ownerName">Owner's Name</label>
+            <input [attr.disabled]="true" type="text" id="ownerName" formControlName="OwnerName" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && OwnerName.errors }" />
+            <div *ngIf="submitted && OwnerName.errors" class="invalid-feedback">
+                <div *ngIf="OwnerName.errors.required">Owner's Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="services">Services</label>
+            <select formControlName="Services" id="services" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && Services.errors }">
+                <option value="" disabled>Choose Service</option>
+                <option *ngFor="let s of enumServices" [value]="s.id">{{s.name}}</option>
+            </select>
+            <div *ngIf="submitted && Services.errors" class="invalid-feedback">
+                <div *ngIf="Services.errors.required">Services is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="veterinarId">Veterinarian Name</label>
+            <select formControlName="Veterinar" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && Veterinar.errors }">
+                <option value="" disabled>Choose Veterinarian Name</option>
+                <option *ngFor="let vet of veterinars" [value]="vet.id">{{vet.firstName}} {{vet.lastName}}</option>
+            </select>
+            <div *ngIf="submitted && Veterinar.errors" class="invalid-feedback">
+                <div *ngIf="Veterinar.errors.required">Veterinar Name is required</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button [disabled]="loading" class="btn btn-primary" type="submit">Update</button>
+        </div>
+    </form>
+ -->

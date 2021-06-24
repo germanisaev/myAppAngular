@@ -1,52 +1,50 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Inspection, User, Veterinar } from '@app/shared/_models';
+import { PetTypes } from '@app/shared/_models/pet-type.enum';
+import { Services } from '@app/shared/_models/services.enum';
+import { CustomerService, GroomingService, VeterinarService } from '@app/shared/_services';
 import * as moment from 'moment';
-import { Inspection, User, Veterinar } from 'src/app/shared/_models';
-import { CustomerService, GroomingService, VeterinarService } from 'src/app/shared/_services';
-import { Services } from 'src/app/shared/_models/services.enum';
-import { PetTypes } from 'src/app/shared/_models/pet-type.enum';
-import { Observable } from 'rxjs';
-
 
 @Component({
-  selector: 'modal-edit',
-  templateUrl: './modal-edit.component.html'
+  selector: 'grooming-form',
+  templateUrl: './grooming-form.component.html',
 })
-export class ModalEditComponent implements OnInit {
+export class GroomingFormComponent implements OnInit {
+
+  @Input()
+  buttonText = 'Submit Inspection';
 
   @Input() fromParent: any;
-  closeResult: string = '';
+
+  @Output()
+  submitInspection = new EventEmitter<Inspection>();
+
   form: FormGroup;
   loading = false;
   submitted = false;
-  customer: User;
 
   veterinars: Array<Veterinar> = [];
   owners: Array<User> = [];
+  customer: User;
 
   enumServices: { id: number; name: string }[] = [];
   enumTypes: { id: number; name: string }[] = [];
 
+
   constructor(
-    public activeModal: NgbActiveModal,
+    private fb: FormBuilder,
     private veterinarService: VeterinarService,
     private customerService: CustomerService,
     private groomingService: GroomingService,
-  ) {
-  }
+    ) { }
 
-  get f() { return this.form.controls; }
-  get Id() { return this.form.get('Id'); }
-  get Veterinar() { return this.form.get('Veterinar'); }
-  get PetType() { return this.form.get('PetType'); }
-  get PetName() { return this.form.get('PetName'); }
-  get OwnerId() { return this.form.get('OwnerId'); }
-  get OwnerName() { return this.form.get('OwnerName'); }
-  get Appointmnet() { return this.form.get('Appointmnet'); }
-  get Services() { return this.form.get('Services'); }
-  get appointmnetDate() { return this.form.get('AppointmnetGroup.appointmnetDate'); }
-  get appointmnetTime() { return this.form.get('AppointmnetGroup.appointmnetTime'); }
+  ngOnInit() {
+    this.createForm();
+    this.getVeterinars();
+    this.enumInit();
+    this.setInspectionValues();
+  }
 
   createForm() {
     this.form = new FormGroup({
@@ -64,33 +62,19 @@ export class ModalEditComponent implements OnInit {
     });
   }
 
-  getVeterinars() {
-    this.veterinarService.getAll().subscribe(response =>
-      this.veterinars = response
-    );
-  }
+  get f() { return this.form.controls; }
+  get Id() { return this.form.get('Id'); }
+  get Veterinar() { return this.form.get('Veterinar'); }
+  get PetType() { return this.form.get('PetType'); }
+  get PetName() { return this.form.get('PetName'); }
+  get OwnerId() { return this.form.get('OwnerId'); }
+  get OwnerName() { return this.form.get('OwnerName'); }
+  get Appointmnet() { return this.form.get('Appointmnet'); }
+  get Services() { return this.form.get('Services'); }
+  get appointmnetDate() { return this.form.get('AppointmnetGroup.appointmnetDate'); }
+  get appointmnetTime() { return this.form.get('AppointmnetGroup.appointmnetTime'); }
 
-  getVeterinarBy(id: any): string {
-    const data = this.veterinars.filter(x => { return x.id == id })[0];
-    return data.firstName + ' ' + data.lastName;
-  }
-
-  getCustomerName() {
-    this.customerService.getById(this.fromParent.OwnerId).subscribe(response => {
-      this.customer = response;
-      const fullName = this.customer.firstName + ' ' + this.customer.lastName;
-      this.OwnerId.setValue(fullName, {
-        onlySelf: true
-      });
-    });
-  }
-
-  ngOnInit() {
-
-    this.createForm();
-    this.getVeterinars();
-    this.enumInit();
-
+  setInspectionValues() {
     const grooming: Inspection = this.fromParent;
 
     let datetime = grooming.Appointment;
@@ -121,15 +105,32 @@ export class ModalEditComponent implements OnInit {
     });
   }
 
+  getVeterinars() {
+    this.veterinarService.getAll().subscribe(response =>
+      this.veterinars = response
+    );
+  }
+
+  getVeterinarBy(id: any): string {
+    const data = this.veterinars.filter(x => { return x.id == id })[0];
+    return data.firstName + ' ' + data.lastName;
+  }
+
+  getCustomerName() {
+    this.customerService.getById(this.fromParent.OwnerId).subscribe(response => {
+      this.customer = response;
+      const fullName = this.customer.firstName + ' ' + this.customer.lastName;
+      this.OwnerId.setValue(fullName, {
+        onlySelf: true
+      });
+    });
+  }
+
   enumInit() {
     const dataServices = new Services();
     this.enumServices = dataServices.get();
     const dataPetTypes = new PetTypes();
     this.enumTypes = dataPetTypes.get();
-  }
-
-  closeModal(sendData) {
-    this.activeModal.close(sendData);
   }
 
   getServiceBy(id: any) {
@@ -141,6 +142,22 @@ export class ModalEditComponent implements OnInit {
     const dataPetTypes = new PetTypes();
     return dataPetTypes.getBy(id);
   }
+
+  doSubmitInspection() {
+
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return
+    }
+
+    this.submitInspection.emit({
+      ...this.form.value,
+    });
+
+    this.setInspectionValues();
+
+  }  
 
   onSubmit() {
     this.submitted = true;
@@ -176,7 +193,7 @@ export class ModalEditComponent implements OnInit {
     grooming.VeterinarName = this.getVeterinarBy(this.Veterinar.value);
 
     this.groomingService.updateItem(grooming, id).subscribe(response => console.log('Success Create: ' + response));
-    this.closeModal('updated');
+    //this.closeModal('updated');
   }
 
 }

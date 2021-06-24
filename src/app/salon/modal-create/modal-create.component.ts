@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit } from
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
-import { GroomingCreated, User, Veterinar } from 'src/app/shared/_models';
+import { Inspection, User, Veterinar } from 'src/app/shared/_models';
 import { CustomerService, GroomingService, VeterinarService } from 'src/app/shared/_services';
 import { Services } from '@app/shared/_models/services.enum';
 import { PetTypes } from '@app/shared/_models/pet-type.enum';
@@ -154,7 +154,7 @@ export class ModalCreateComponent implements OnInit, AfterViewInit {
     mydate.setSeconds(0);
     let exp = moment(mydate).format('DD-MM-YYYY HH:mm');
 
-    let grooming = new GroomingCreated();
+    let grooming = new Inspection();
     grooming.Appointment = exp;
     grooming.PetName = this.PetName.value;
     grooming.PetTypeId = this.PetType.value.id;

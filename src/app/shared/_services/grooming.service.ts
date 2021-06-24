@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { GroomingCreated } from '../_models';
-import { Grooming } from '../_models/grooming.model';
+import { Inspection } from '../_models';
 
 @Injectable({
   providedIn: 'root'
@@ -46,27 +45,30 @@ export class GroomingService {
     return this._baseUrl + '/' + encodeURIComponent(String(elementId));
   }
 
-  getAll(): Observable<Grooming[]> {
-    return this.http.get<Grooming[]>(this.getCollectionUrl(), this.httpOptions);
+  getAll(): Observable<Inspection[]> {
+    return this.http.get<Inspection[]>(this.getCollectionUrl(), this.httpOptions);
   }
 
-  getById(id: any): Observable<Grooming> {
-    return this.http.get<Grooming>(this.getElementUrl(id), this.httpOptions);
+  getById(id: any): Observable<Inspection> {
+    return this.http.get<Inspection>(this.getElementUrl(id), this.httpOptions);
   }
 
   deleteItem(id: any) {
     return this.http.delete(this.getElementUrl(id), this.httpOptions);
   }
 
-  createItem(model: GroomingCreated): Observable<Grooming> {
-    return this.http.post<Grooming>(this.getCollectionUrl(), JSON.stringify(model), this.httpOptions)
+  createItem(model: Inspection): Observable<Inspection> {
+    return this.http.post<Inspection>(this.getCollectionUrl(), JSON.stringify(model), this.httpOptions)
     .pipe(
       tap(() => {
         this.refreshNeeded$.next();
       }));
   }
 
-  updateItem(model: Grooming, id: number) {
+  updateItem(model: Inspection, id?: number) {
+    if(!id) {
+      id = model.Id
+    }
     return this.http.put(this.getElementUrl(id), JSON.stringify(model), this.httpOptions)
     .pipe(
       tap(() => {
@@ -74,7 +76,7 @@ export class GroomingService {
       }));
   }
 
-  getExist(model: GroomingCreated) {
+  getExist(model: Inspection) {
     return this.http.post(`${environment.apiUrl}/spreader/exist`, JSON.stringify(model), this.httpOptions);
   }
 

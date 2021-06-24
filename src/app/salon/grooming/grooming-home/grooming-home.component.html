@@ -1,5 +1,17 @@
-<grooming-table 
+<!-- <grooming-table 
 [inspections]="duplicate$" 
 (filterInspection)="doFilterDate($event)"
 (filterCancel)="doCancel($event)">
-</grooming-table>
+</grooming-table> 
+
+
+[editInspectionId]="editInspectionId$ | async"
+-->
+
+<grooming-table [inspections]="inspections$ | async" [editInspectionId]="editInspectionId$ | async"
+  (editInspection)="doEditInspection($event)"
+  (deleteInspection)="doDeleteInspection($event)"
+  (saveInspection)="doReplaceInspection($event)"
+  (cancelInspection)="doCancelInspection()"></grooming-table>
+
+<!-- <grooming-form buttonText="Add Inspection" (submitInspection)="doAppendInspection($event)"></grooming-form> -->

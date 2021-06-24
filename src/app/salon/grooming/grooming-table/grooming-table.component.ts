@@ -14,10 +14,43 @@ import { map } from 'rxjs/operators';
   selector: 'grooming-table',
   templateUrl: './grooming-table.component.html',
 })
-export class GroomingTableComponent implements OnInit {
-
+export class GroomingTableComponent {
 
   @Input()
+  inspections: Inspection[] = [];
+
+  @Input()
+  editInspectionId = 0;
+
+  @Output()
+  editInspection = new EventEmitter<number>();
+
+  @Output()
+  deleteInspection = new EventEmitter<number>();
+
+  @Output()
+  saveInspection = new EventEmitter<Inspection>();
+
+  @Output()
+  cancelInspection = new EventEmitter<void>();
+
+  doEdit(inspectionId: number) {
+    this.editInspection.emit(inspectionId);
+  }
+
+  doDelete(inspectionId: number) {
+    this.deleteInspection.emit(inspectionId);
+  }
+
+  doSave(inspection: Inspection) {
+    this.saveInspection.emit(inspection);
+  }
+
+  doCancel() {
+    this.cancelInspection.emit();
+  }
+
+  /* @Input()
   inspections: Observable<Array<Inspection>>;
   duplicate$: Observable<Array<Inspection>>;
 
@@ -40,12 +73,13 @@ export class GroomingTableComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
 
+  
   constructor(
     private modalService: NgbModal,
     private service: GroomingService,
     private customerService: CustomerService,
   ) { }
-
+  
   ngOnInit(): void {
     this.getPermition();
   }
@@ -175,6 +209,6 @@ export class GroomingTableComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
-  }
+  } */
 
 }

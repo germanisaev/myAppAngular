@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AuthService } from '../shared/_services/auth.service';
+import { GroomingService } from '../shared/_services/grooming.service';
+
 import { SalonRoutingModule } from './salon-routing.module';
 import { DashboardComponent } from './dashboard';
 import { HeaderComponent } from './header/header.component';
@@ -19,6 +21,8 @@ import { GroomingTableComponent } from './grooming/grooming-table/grooming-table
 import { ModalConfirmComponent } from './modal-confirm/modal-confirm.component';
 import { GrommingToolsComponent } from './grooming/gromming-tools/gromming-tools.component';
 import { ModalViewComponent } from './modal-view/modal-view.component';
+import { GroomingFormComponent } from './grooming/grooming-form/grooming-form.component';
+import { CustomerService, VeterinarService } from '@app/shared/_services';
 
 @NgModule({
     imports: [
@@ -41,9 +45,13 @@ import { ModalViewComponent } from './modal-view/modal-view.component';
         ModalConfirmComponent,
         GrommingToolsComponent,
         ModalViewComponent,
+        GroomingFormComponent,
     ],
     providers: [
-        AuthService
+        AuthService,
+        GroomingService,
+        CustomerService,
+        VeterinarService
     ]
 })
 export class SalonModule { }

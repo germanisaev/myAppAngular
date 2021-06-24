@@ -44,7 +44,7 @@ export class GrommingToolsComponent implements OnInit {
     /* this.duplicate$ = this.inspections; */
   }
 
-  reverseTimeStamp(datetimeString) {
+  reverseDatetime(datetimeString) {
     const reverse = new Date(datetimeString.split("-").reverse().join("-"));
     return reverse.getTime();
   }
@@ -61,8 +61,8 @@ export class GrommingToolsComponent implements OnInit {
     if (this.fromDate && this.toDate) {
       const selectedMembers = this.inspections.pipe(
         map(data => data.filter(m => {
-          return this.reverseTimeStamp(this.splitDatetime(m.Appointment)) >= this.reverseTimeStamp(fromdate)
-            && this.reverseTimeStamp(this.splitDatetime(m.Appointment)) <= this.reverseTimeStamp(todate)
+          return this.reverseDatetime(this.splitDatetime(m.Appointment)) >= this.reverseDatetime(fromdate)
+            && this.reverseDatetime(this.splitDatetime(m.Appointment)) <= this.reverseDatetime(todate)
         })
         ));
       /* this.duplicate$ = selectedMembers; */

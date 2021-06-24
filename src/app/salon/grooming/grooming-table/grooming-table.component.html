@@ -1,4 +1,28 @@
-<h1 class="p-2">Grooming Salon Inspection</h1>
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Appointment</th>
+            <th>Pet Name</th>
+            <th>Pet Type</th>
+            <th>Owner's Name</th>
+            <th>Services</th>
+            <th>Veterinarian Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let inspect of inspections">
+            <tr class="view-inspection-row" *ngIf="editInspectionId !== inspect.Id" [inspect]="inspect"
+                (editInspection)="doEdit($event)" (deleteInspection)="doDelete($event)"></tr>
+            <tr class="edit-inspection-row" *ngIf="editInspectionId === inspect.Id" [inspect]="inspect"
+                (saveInspection)="doSave($event)" (cancelInspection)="doCancel()"></tr>
+        </ng-container>
+    </tbody>
+</table>
+
+
+<!-- <h1 class="p-2">Grooming Salon Inspection</h1>
 <div class="row">
     <div class="col-2">
         <a (click)="openModal('create')" class="btn btn-sm btn-success mx-2 mb-2" tooltip="create inspection"
@@ -76,4 +100,4 @@
             </td>
         </tr>
     </tbody>
-</table>
+</table> -->
